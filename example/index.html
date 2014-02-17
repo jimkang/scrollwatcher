@@ -1,0 +1,115 @@
+<html>
+<head>
+<title>Scrollwatcher example</title>
+
+<style>
+body {
+  background-color: #444;
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 0;
+}
+
+.explanation {
+  font-family: 'Helvetica Neue', sans-serif;
+  font-size: 36px;
+  color: white;
+  padding: 1em;
+}
+
+ul {
+  padding-left: 0;
+}
+
+li {
+  height: 440px;
+  color: white;
+  padding-left: 0.5em;
+  transition: background-color 1s;
+  background-color: black;
+  font-family: futura, 'Helvetica Neue', sans-serif;
+  font-size: 150px;
+}
+
+.one.in-spotlight {
+  background-color: red;
+  transition: background-color 3s;
+}
+
+.two.in-spotlight {
+  background-color: green;
+  transition: background-color 3s;
+}
+
+.three.in-spotlight {
+  background-color: blue;
+  transition: background-color 3s;
+}
+</style>
+</head>
+
+<body>
+  <div class="explanation">
+    <p>
+      When the middle third of the "one" or "two" &lt;li&gt; elements scrolls into view, the &lt;li&gt; will change into a non-black color. When the middle third of the &lt;li&gt; scrolls out of view, the &lt;li&gt; will become black.
+    </p>
+    <p>
+      When the center of the "three" &lt;li&gt; element scrolls into view, the &lt;li&gt; will change to blue. When the center scrolls out of ivew, the &lt;li&gt; will become black.
+    </p>
+  </div>
+  <ul>
+    <li class="one">ONE</li>
+    <li class="two">TWO</li>
+    <li class="three">THREE</li>
+  </ul>
+
+<script src="../scrollwatcher.js"></script>
+<script>
+
+// 
+function middleThirdOfElIntersectsWithView(viewTop, viewBottom, el) {
+  var topThreshold = el.offsetTop + el.offsetHeight * 0.33;
+  var bottomThreshold = el.offsetTop + el.offsetHeight * 0.67;
+  return !(bottomThreshold < viewTop || topThreshold > viewBottom);
+}
+
+var scrollWatcher = createScrollWatcher();
+scrollWatcher.watchElements(
+  [
+    {
+      selector: '.one', 
+      isInViewFunction: middleThirdOfElIntersectsWithView
+    },
+    {
+      selector: '.two', 
+      isInViewFunction: middleThirdOfElIntersectsWithView
+    },
+    {
+      selector: '.three'
+      // Not specifying an isInViewFunction so scrollWatcher will default to 
+      // checking to see if the center of the element is in the view.
+    }
+  ]
+);
+
+document.addEventListener('elMovedIntoView', 
+  function onElCenterInView(e) {
+    e.detail.classList.add('in-spotlight');
+  }
+);
+
+document.addEventListener('elMovedOutOfView', 
+  function onElCenterOutOfView(e) {
+    e.detail.classList.remove('in-spotlight');
+  }
+);
+
+
+// Initial sync of what's in-view and the in-spotlight class.
+scrollWatcher.respondToScroll();
+
+</script>
+
+</body>
+
+</html>
