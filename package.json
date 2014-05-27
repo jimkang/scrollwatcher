@@ -1,6 +1,6 @@
 {
   "name": "scrollwatcher",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Module that emits events when elements scroll into view.",
   "main": "scrollwatcher.js",
   "scripts": {
